@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -7,74 +7,27 @@ import {
   Typography,
   Stack,
   Divider,
-  Alert
-} from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import demoData from '../test/demo.json'; // Adjust the path if needed
-// import UploadFileIcon from '@mui/icons-material/UploadFile';
+  Alert,
+} from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import demoData from "../test/demo.json"; // Adjust the path if needed
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 const JsonTableUploader = () => {
-  // const [rows, setRows] = useState([]);
-  // const [columns, setColumns] = useState([]);
-  // const [fileName, setFileName] = useState('');
-  // const [error, setError] = useState('');
-
-  // const handleFileUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   setError('');
-  //   if (!file) return;
-
-  //   const reader = new FileReader();
-  //   reader.onload = (event) => {
-  //     try {
-  //       const json = JSON.parse(event.target.result);
-
-  //       if (Array.isArray(json) && json.length > 0) {
-  //         const firstRow = json[0];
-  //         if (typeof firstRow !== 'object' || Array.isArray(firstRow)) {
-  //           throw new Error('Each item in the array should be an object');
-  //         }
-
-  //         const cols = Object.keys(firstRow).map((key) => ({
-  //           field: key,
-  //           headerName: key,
-  //           flex: 1,
-  //         }));
-
-  //         const rowsWithIds = json.map((row, index) => ({
-  //           id: index,
-  //           ...row,
-  //         }));
-
-  //         setColumns(cols);
-  //         setRows(rowsWithIds);
-  //         setFileName(file.name);
-  //       } else {
-  //         throw new Error('JSON must be a non-empty array of objects');
-  //       }
-  //     } catch (error) {
-  //       setError(`Invalid JSON: ${error.message}`);
-  //       setFileName('');
-  //       setRows([]);
-  //       setColumns([]);
-  //     }
-  //   };
-  //   reader.readAsText(file);
-  // };
-
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [error, setError] = useState('');
+  const [fileName, setFileName] = useState("Loaded from demo.json");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
+  const loadJsonToTable = (json, sourceName = "Loaded JSON") => {
     try {
-      if (!Array.isArray(demoData) || demoData.length === 0) {
-        throw new Error('demo.json must be a non-empty array of objects');
+      if (!Array.isArray(json) || json.length === 0) {
+        throw new Error("JSON must be a non-empty array of objects");
       }
 
-      const firstRow = demoData[0];
-      if (typeof firstRow !== 'object' || Array.isArray(firstRow)) {
-        throw new Error('Each item in demo.json must be an object');
+      const firstRow = json[0];
+      if (typeof firstRow !== "object" || Array.isArray(firstRow)) {
+        throw new Error("Each item in the array should be an object");
       }
 
       const cols = Object.keys(firstRow).map((key) => ({
@@ -83,21 +36,49 @@ const JsonTableUploader = () => {
         flex: 1,
       }));
 
-      const rowsWithIds = demoData.map((row, index) => ({
+      const rowsWithIds = json.map((row, index) => ({
         id: row.id || index,
         ...row,
       }));
 
       setColumns(cols);
       setRows(rowsWithIds);
+      setFileName(sourceName);
+      setError("");
     } catch (err) {
-      setError(`Error loading demo.json: ${err.message}`);
+      setError(`Error processing JSON: ${err.message}`);
+      setColumns([]);
+      setRows([]);
+      setFileName("");
     }
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target.result);
+        loadJsonToTable(json, file.name);
+      } catch (err) {
+        setError(`Invalid JSON: ${err.message}`);
+        setColumns([]);
+        setRows([]);
+        setFileName("");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  useEffect(() => {
+    // Load demo data on mount
+    loadJsonToTable(demoData, "demo.json");
   }, []);
 
-
   return (
-    <Box sx={{ p: 3, maxWidth: '1200px', mx: 'auto' }}>
+    <Box sx={{ p: 3, maxWidth: "1200px", mx: "auto" }}>
       <Card elevation={3}>
         <CardContent>
           <Stack spacing={3}>
@@ -105,7 +86,7 @@ const JsonTableUploader = () => {
               JSON to Table Converter
             </Typography>
 
-            {/* <Stack direction="row" alignItems="center" spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={2}>
               <Button
                 component="label"
                 variant="contained"
@@ -124,25 +105,25 @@ const JsonTableUploader = () => {
                   {fileName}
                 </Typography>
               )}
-            </Stack> */}
+            </Stack>
 
             {error && <Alert severity="error">{error}</Alert>}
 
             <Divider />
 
-            <Box sx={{ height: 500, width: '100%' }}>
+            <Box sx={{ height: 500, width: "100%" }}>
               <DataGrid
                 rows={rows}
                 columns={columns}
-                showToolbar 
+                showToolbar
                 disableRowSelectionOnClick
                 sx={{
-                  '& .MuiDataGrid-toolbarContainer': {
-                    justifyContent: 'flex-end',
+                  "& .MuiDataGrid-toolbarContainer": {
+                    justifyContent: "flex-end",
                   },
-                  '& .MuiDataGrid-columnHeaders': {
-                    backgroundColor: '#f5f5f5',
-                    fontWeight: 'bold',
+                  "& .MuiDataGrid-columnHeaders": {
+                    backgroundColor: "#f5f5f5",
+                    fontWeight: "bold",
                   },
                   borderRadius: 1,
                 }}
