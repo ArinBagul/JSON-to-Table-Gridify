@@ -23,7 +23,7 @@ A simple, modern web application that allows users to upload a `.json` file (con
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/json-table-uploader.git
+git clone https://github.com/work-ABProductions/JSON-to-Table-Gridify.git
 
 # Navigate into the project folder
 cd json-table-uploader
