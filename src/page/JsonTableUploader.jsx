@@ -82,12 +82,12 @@ const JsonTableUploader = () => {
       <Card elevation={3}>
         <CardContent>
           <Stack spacing={3}>
-            <Typography variant="h5" fontWeight={600}>
+            {/* <Typography variant="h5" fontWeight={600}>
               JSON to Table Converter
-            </Typography>
+            </Typography> */}
 
             <Stack direction="row" alignItems="center" spacing={2}>
-              <Button
+              {/* <Button
                 component="label"
                 variant="contained"
                 startIcon={<UploadFileIcon />}
@@ -99,7 +99,7 @@ const JsonTableUploader = () => {
                   hidden
                   onChange={handleFileUpload}
                 />
-              </Button>
+              </Button> */}
               {fileName && (
                 <Typography variant="body1" color="text.secondary">
                   {fileName}
